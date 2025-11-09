@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import DetailView
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
+from .models import Library
 from .models import Library, Book
 
 # Function-based view to list all books

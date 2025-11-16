@@ -7,7 +7,8 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from django.contrib import messages
 from .models import Book
-from .forms import BookForm, ExampleForm
+from .forms import BookForm
+from .forms import ExampleForm
 import logging
 
 # Configure logging for security events

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ action }} Book - Secure Library</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-control { width: 100%; padding: 8px; margin-top: 5px; }
+        .btn { padding: 10px 20px; margin-right: 10px; }
+        .messages { margin: 10px 0; }
+        .error { color: red; }
+        .success { color: green; }
+        .errorlist { color: red; list-style: none; padding: 0; }
+    </style>
+</head>
+<body>
+    <h1>{{ action }} Book</h1>
+    
+    <!-- Display messages -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <!-- Secure form with CSRF protection -->
+    <form method="post" novalidate>
+        {% csrf_token %}
+        
+        <!-- Display non-field errors -->
+        {% if form.non_field_errors %}
+            <div class="error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        
+        <!-- Render form fields with proper escaping -->
+        <div class="form-group">
+            <label for="{{ form.title.id_for_label }}">{{ form.title.label }}:</label>
+            {{ form.title }}
+            {% if form.title.errors %}
+                <ul class="errorlist">
+                    {% for error in form.title.errors %}
+                        <li>{{ error|escape }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.author.id_for_label }}">{{ form.author.label }}:</label>
+            {{ form.author }}
+            {% if form.author.errors %}
+                <ul class="errorlist">
+                    {% for error in form.author.errors %}
+                        <li>{{ error|escape }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.publication_year.id_for_label }}">{{ form.publication_year.label }}:</label>
+            {{ form.publication_year }}
+            {% if form.publication_year.errors %}
+                <ul class="errorlist">
+                    {% for error in form.publication_year.errors %}
+                        <li>{{ error|escape }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        
+        <button type="submit" class="btn">{{ action }}</button>
+        <a href="{% url 'book_list' %}" class="btn">Cancel</a>
+    </form>
+</body>
+</html>

@@ -1,19 +1,72 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Book List</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book List - Secure Library</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .search-form { margin-bottom: 20px; }
+        .book-item { margin: 10px 0; padding: 10px; border: 1px solid #ddd; }
+        .messages { margin: 10px 0; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
 </head>
 <body>
     <h1>Books</h1>
+    
+    <!-- Display messages -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <!-- Secure search form with CSRF protection -->
+    <div class="search-form">
+        <form method="get" action="{% url 'book_list' %}">
+            <input type="text" name="search" value="{{ search_query|default:'' }}" placeholder="Search books..." maxlength="100">
+            <button type="submit">Search</button>
+            {% if search_query %}
+                <a href="{% url 'book_list' %}">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+    
     <a href="{% url 'book_create' %}">Add New Book</a>
-    <ul>
-        {% for book in books %}
-        <li>
-            {{ book.title }} by {{ book.author }} ({{ book.publication_year }})
-            <a href="{% url 'book_edit' book.pk %}">Edit</a>
-            <a href="{% url 'book_delete' book.pk %}">Delete</a>
-        </li>
-        {% endfor %}
-    </ul>
+    
+    {% if books %}
+        <div class="book-list">
+            {% for book in books %}
+            <div class="book-item">
+                <strong>{{ book.title|escape }}</strong> by {{ book.author|escape }} ({{ book.publication_year }})
+                <div>
+                    <a href="{% url 'book_edit' book.pk %}">Edit</a> |
+                    <a href="{% url 'book_delete' book.pk %}">Delete</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if books.has_other_pages %}
+            <div class="pagination">
+                {% if books.has_previous %}
+                    <a href="?page={{ books.previous_page_number }}{% if search_query %}&search={{ search_query|urlencode }}{% endif %}">&laquo; Previous</a>
+                {% endif %}
+                
+                Page {{ books.number }} of {{ books.paginator.num_pages }}
+                
+                {% if books.has_next %}
+                    <a href="?page={{ books.next_page_number }}{% if search_query %}&search={{ search_query|urlencode }}{% endif %}">Next &raquo;</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% else %}
+        <p>No books found.</p>
+    {% endif %}
 </body>
 </html>

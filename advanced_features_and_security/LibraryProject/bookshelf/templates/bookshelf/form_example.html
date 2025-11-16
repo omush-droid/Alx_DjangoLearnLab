@@ -3,20 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ action }} Book - Secure Library</title>
+    <title>Secure Form Example</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         .form-group { margin-bottom: 15px; }
         .form-control { width: 100%; padding: 8px; margin-top: 5px; }
-        .btn { padding: 10px 20px; margin-right: 10px; }
+        .btn { padding: 10px 20px; background-color: #007bff; color: white; border: none; }
         .messages { margin: 10px 0; }
         .error { color: red; }
         .success { color: green; }
         .errorlist { color: red; list-style: none; padding: 0; }
+        .security-info { background-color: #e7f3ff; padding: 15px; margin: 20px 0; border-left: 4px solid #007bff; }
     </style>
 </head>
 <body>
-    <h1>{{ action }} Book</h1>
+    <h1>Secure Form Example</h1>
+    
+    <div class="security-info">
+        <h3>🔒 Security Features Demonstrated:</h3>
+        <ul>
+            <li>CSRF Token Protection</li>
+            <li>Input Validation and Sanitization</li>
+            <li>XSS Prevention with Proper Escaping</li>
+            <li>Form Field Length Limits</li>
+            <li>Server-side Validation</li>
+        </ul>
+    </div>
     
     <!-- Display messages -->
     {% if messages %}
@@ -38,13 +50,12 @@
             </div>
         {% endif %}
         
-        <!-- Render form fields with proper escaping -->
         <div class="form-group">
-            <label for="{{ form.title.id_for_label }}">{{ form.title.label }}:</label>
-            {{ form.title }}
-            {% if form.title.errors %}
+            <label for="{{ form.name.id_for_label }}">{{ form.name.label }}:</label>
+            {{ form.name }}
+            {% if form.name.errors %}
                 <ul class="errorlist">
-                    {% for error in form.title.errors %}
+                    {% for error in form.name.errors %}
                         <li>{{ error|escape }}</li>
                     {% endfor %}
                 </ul>
@@ -52,11 +63,11 @@
         </div>
         
         <div class="form-group">
-            <label for="{{ form.author.id_for_label }}">{{ form.author.label }}:</label>
-            {{ form.author }}
-            {% if form.author.errors %}
+            <label for="{{ form.email.id_for_label }}">{{ form.email.label }}:</label>
+            {{ form.email }}
+            {% if form.email.errors %}
                 <ul class="errorlist">
-                    {% for error in form.author.errors %}
+                    {% for error in form.email.errors %}
                         <li>{{ error|escape }}</li>
                     {% endfor %}
                 </ul>
@@ -64,19 +75,20 @@
         </div>
         
         <div class="form-group">
-            <label for="{{ form.publication_year.id_for_label }}">{{ form.publication_year.label }}:</label>
-            {{ form.publication_year }}
-            {% if form.publication_year.errors %}
+            <label for="{{ form.message.id_for_label }}">{{ form.message.label }}:</label>
+            {{ form.message }}
+            {% if form.message.errors %}
                 <ul class="errorlist">
-                    {% for error in form.publication_year.errors %}
+                    {% for error in form.message.errors %}
                         <li>{{ error|escape }}</li>
                     {% endfor %}
                 </ul>
             {% endif %}
         </div>
         
-        <button type="submit" class="btn">{{ action }}</button>
-        <a href="{% url 'book_list' %}" class="btn">Cancel</a>
+        <button type="submit" class="btn">Submit Securely</button>
     </form>
+    
+    <p><a href="{% url 'book_list' %}">Back to Book List</a></p>
 </body>
 </html>

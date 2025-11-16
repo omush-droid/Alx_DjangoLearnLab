@@ -20,12 +20,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# TODO: Generate a new SECRET_KEY for production with at least 50 characters
 SECRET_KEY = 'django-insecure-*%ln2+f&yspmq5_hxj^kxxo7k^&d$)0iyu_(4y%#1=x-ojj%j6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.yourdomain.com']  # Configure for production
 
 
 # Application definition
@@ -130,3 +131,26 @@ LOGOUT_REDIRECT_URL = '/login/'
 
 # Custom User Model
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
+
+# Security Settings
+# Browser security headers
+SECURE_BROWSER_XSS_FILTER = True  # Enable XSS filtering in browsers
+X_FRAME_OPTIONS = 'DENY'  # Prevent clickjacking attacks
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME type sniffing
+
+# HTTPS and cookie security
+CSRF_COOKIE_SECURE = True  # Send CSRF cookie over HTTPS only
+SESSION_COOKIE_SECURE = True  # Send session cookie over HTTPS only
+SECURE_SSL_REDIRECT = True  # Redirect HTTP to HTTPS
+SECURE_HSTS_SECONDS = 31536000  # HTTP Strict Transport Security
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Content Security Policy
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'",)
+CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")
+CSP_IMG_SRC = ("'self'", "data:", "https:")
+CSP_FONT_SRC = ("'self'",)
+CSP_CONNECT_SRC = ("'self'",)
+CSP_FRAME_ANCESTORS = ("'none'",)

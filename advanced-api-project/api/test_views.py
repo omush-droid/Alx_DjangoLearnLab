@@ -39,7 +39,7 @@ class BookAPITestCase(TestCase):
 
     def test_book_create_authenticated(self):
         """Test creating a book with authentication"""
-        self.client.force_authenticate(user=self.user)
+        self.client.login(username='testuser', password='testpass123')
         data = {
             'title': 'New Book',
             'publication_year': 2024,
@@ -61,7 +61,7 @@ class BookAPITestCase(TestCase):
 
     def test_book_update_authenticated(self):
         """Test updating a book with authentication"""
-        self.client.force_authenticate(user=self.user)
+        self.client.login(username='testuser', password='testpass123')
         data = {
             'title': 'Updated Book',
             'publication_year': 2024,
@@ -84,7 +84,7 @@ class BookAPITestCase(TestCase):
 
     def test_book_delete_authenticated(self):
         """Test deleting a book with authentication"""
-        self.client.force_authenticate(user=self.user)
+        self.client.login(username='testuser', password='testpass123')
         response = self.client.delete(f'/api/books/delete/{self.book.id}/')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Book.objects.count(), 0)

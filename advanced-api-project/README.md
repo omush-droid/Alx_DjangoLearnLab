@@ -40,6 +40,29 @@
 - **Permission**: IsAuthenticated (authenticated users only)
 - **Generic View**: `DestroyAPIView`
 
+## Advanced Query Features
+
+### Filtering
+Filter books by specific field values:
+- `/api/books/?title=Book Title`
+- `/api/books/?author=1`
+- `/api/books/?publication_year=2023`
+
+### Searching
+Search across title and author name:
+- `/api/books/?search=python`
+- `/api/books/?search=author name`
+
+### Ordering
+Order results by any field:
+- `/api/books/?ordering=title` (ascending)
+- `/api/books/?ordering=-publication_year` (descending)
+- `/api/books/?ordering=title,publication_year` (multiple fields)
+
+### Combined Queries
+Combine filtering, searching, and ordering:
+- `/api/books/?search=python&ordering=-publication_year&author=1`
+
 ## Testing the API
 
 ### Using curl:
@@ -47,6 +70,18 @@
 ```bash
 # List all books
 curl -X GET http://localhost:8000/api/books/
+
+# Filter books by publication year
+curl -X GET "http://localhost:8000/api/books/?publication_year=2023"
+
+# Search for books
+curl -X GET "http://localhost:8000/api/books/?search=python"
+
+# Order books by title
+curl -X GET "http://localhost:8000/api/books/?ordering=title"
+
+# Combined query
+curl -X GET "http://localhost:8000/api/books/?search=book&ordering=-publication_year"
 
 # Get specific book
 curl -X GET http://localhost:8000/api/books/1/
@@ -58,12 +93,12 @@ curl -X POST http://localhost:8000/api/books/create/ \
   -d '{"title": "New Book", "publication_year": 2023, "author": 1}'
 
 # Update book (requires authentication)
-curl -X PUT http://localhost:8000/api/books/1/update/ \
+curl -X PUT http://localhost:8000/api/books/update/1/ \
   -H "Content-Type: application/json" \
   -H "Authorization: Token YOUR_TOKEN" \
   -d '{"title": "Updated Book", "publication_year": 2023, "author": 1}'
 
 # Delete book (requires authentication)
-curl -X DELETE http://localhost:8000/api/books/1/delete/ \
+curl -X DELETE http://localhost:8000/api/books/delete/1/ \
   -H "Authorization: Token YOUR_TOKEN"
 ```

@@ -254,3 +254,37 @@ form input:focus {
 .pagination a:hover {
     text-decoration: underline;
 }
+
+/* Comments Styling */
+.comments-section {
+    border-top: 1px solid #ddd;
+    padding-top: 2rem;
+}
+
+.comment {
+    border: 1px solid #eee;
+    padding: 1rem;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.comment-meta {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.comment-content {
+    margin-bottom: 0.5rem;
+}
+
+.comment-actions {
+    margin-top: 0.5rem;
+}
+
+.comment-actions .btn {
+    margin-right: 0.5rem;
+}
+
+.text-muted {
+    color: #6c757d;
+}

@@ -24,7 +24,7 @@
         
         {% if user.is_authenticated %}
             <div class="mb-4">
-                <a href="{% url 'comment-create' post.id %}" class="btn btn-primary">Add Comment</a>
+                <a href="{% url 'comment-create' post.pk %}" class="btn btn-primary">Add Comment</a>
             </div>
             <form method="post" action="{% url 'add-comment' post.id %}" class="mb-4">
                 {% csrf_token %}

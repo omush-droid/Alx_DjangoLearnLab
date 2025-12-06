@@ -23,10 +23,13 @@
         <h3>Comments ({{ comments.count }})</h3>
         
         {% if user.is_authenticated %}
+            <div class="mb-4">
+                <a href="{% url 'comment-create' post.id %}" class="btn btn-primary">Add Comment</a>
+            </div>
             <form method="post" action="{% url 'add-comment' post.id %}" class="mb-4">
                 {% csrf_token %}
                 {{ comment_form.as_p }}
-                <button type="submit" class="btn btn-primary">Add Comment</button>
+                <button type="submit" class="btn btn-primary">Quick Comment</button>
             </form>
         {% else %}
             <p><a href="{% url 'login' %}">Login</a> to add a comment.</p>

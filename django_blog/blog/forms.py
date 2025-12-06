@@ -34,3 +34,9 @@ class CommentForm(forms.ModelForm):
         widgets = {
             'content': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Write your comment here...'})
         }
+    
+    def clean_content(self):
+        content = self.cleaned_data.get('content')
+        if len(content.strip()) < 5:
+            raise forms.ValidationError('Comment must be at least 5 characters long.')
+        return content

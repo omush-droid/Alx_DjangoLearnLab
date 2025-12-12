@@ -1,0 +1,424 @@
+{
+	"info": {
+		"name": "Social Media API",
+		"description": "Complete API collection for Social Media API with authentication, posts, and comments",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{auth_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000/api",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "post_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "comment_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('auth_token', response.token);",
+									"    pm.collectionVariables.set('user_id', response.user_id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"email\": \"test@example.com\",\n    \"password\": \"securepassword123\",\n    \"bio\": \"Test user bio\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/accounts/register/",
+							"host": ["{{base_url}}"],
+							"path": ["accounts", "register", ""]
+						}
+					}
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('auth_token', response.token);",
+									"    pm.collectionVariables.set('user_id', response.user_id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"securepassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/accounts/login/",
+							"host": ["{{base_url}}"],
+							"path": ["accounts", "login", ""]
+						}
+					}
+				},
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/accounts/profile/",
+							"host": ["{{base_url}}"],
+							"path": ["accounts", "profile", ""]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Posts",
+			"item": [
+				{
+					"name": "Create Post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('post_id', response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"My First Post\",\n    \"content\": \"This is the content of my first post. It's about testing the API.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/posts/",
+							"host": ["{{base_url}}"],
+							"path": ["posts", ""]
+						}
+					}
+				},
+				{
+					"name": "List All Posts",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/posts/",
+							"host": ["{{base_url}}"],
+							"path": ["posts", ""]
+						}
+					}
+				},
+				{
+					"name": "Search Posts",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/posts/?search=first",
+							"host": ["{{base_url}}"],
+							"path": ["posts", ""],
+							"query": [
+								{
+									"key": "search",
+									"value": "first"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Filter Posts by Author",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/posts/?author={{user_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["posts", ""],
+							"query": [
+								{
+									"key": "author",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Specific Post",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/posts/{{post_id}}/",
+							"host": ["{{base_url}}"],
+							"path": ["posts", "{{post_id}}", ""]
+						}
+					}
+				},
+				{
+					"name": "Update Post",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Updated Post Title\",\n    \"content\": \"This is the updated content of my post.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/posts/{{post_id}}/",
+							"host": ["{{base_url}}"],
+							"path": ["posts", "{{post_id}}", ""]
+						}
+					}
+				},
+				{
+					"name": "Delete Post",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/posts/{{post_id}}/",
+							"host": ["{{base_url}}"],
+							"path": ["posts", "{{post_id}}", ""]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "Create Comment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('comment_id', response.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"post\": {{post_id}},\n    \"content\": \"Great post! Thanks for sharing this information.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/comments/",
+							"host": ["{{base_url}}"],
+							"path": ["comments", ""]
+						}
+					}
+				},
+				{
+					"name": "List All Comments",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/comments/",
+							"host": ["{{base_url}}"],
+							"path": ["comments", ""]
+						}
+					}
+				},
+				{
+					"name": "Filter Comments by Post",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/comments/?post={{post_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["comments", ""],
+							"query": [
+								{
+									"key": "post",
+									"value": "{{post_id}}"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Filter Comments by Author",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/comments/?author={{user_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["comments", ""],
+							"query": [
+								{
+									"key": "author",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Specific Comment",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/comments/{{comment_id}}/",
+							"host": ["{{base_url}}"],
+							"path": ["comments", "{{comment_id}}", ""]
+						}
+					}
+				},
+				{
+					"name": "Update Comment",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"Updated comment content with more details.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/comments/{{comment_id}}/",
+							"host": ["{{base_url}}"],
+							"path": ["comments", "{{comment_id}}", ""]
+						}
+					}
+				},
+				{
+					"name": "Delete Comment",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/comments/{{comment_id}}/",
+							"host": ["{{base_url}}"],
+							"path": ["comments", "{{comment_id}}", ""]
+						}
+					}
+				}
+			]
+		}
+	]
+}

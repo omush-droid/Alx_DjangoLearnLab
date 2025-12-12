@@ -39,6 +39,22 @@ A Django REST Framework-based social media API with user authentication and prof
 - **POST** `/api/accounts/login/` - User login
 - **GET/PUT** `/api/accounts/profile/` - User profile management
 
+### Posts Endpoints
+
+- **GET** `/api/posts/` - List all posts (with pagination and search)
+- **POST** `/api/posts/` - Create a new post
+- **GET** `/api/posts/{id}/` - Retrieve a specific post
+- **PUT** `/api/posts/{id}/` - Update a post (author only)
+- **DELETE** `/api/posts/{id}/` - Delete a post (author only)
+
+### Comments Endpoints
+
+- **GET** `/api/comments/` - List all comments (with filtering)
+- **POST** `/api/comments/` - Create a new comment
+- **GET** `/api/comments/{id}/` - Retrieve a specific comment
+- **PUT** `/api/comments/{id}/` - Update a comment (author only)
+- **DELETE** `/api/comments/{id}/` - Delete a comment (author only)
+
 ### User Registration
 **Endpoint:** `POST /api/accounts/register/`
 
@@ -115,12 +131,150 @@ The API uses Django REST Framework's Token Authentication. Include the token in 
 Authorization: Token your-auth-token
 ```
 
+### Create Post
+**Endpoint:** `POST /api/posts/`
+
+**Headers:**
+```
+Authorization: Token your-auth-token
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+    "title": "My First Post",
+    "content": "This is the content of my first post."
+}
+```
+
+**Response:**
+```json
+{
+    "id": 1,
+    "author": "testuser",
+    "title": "My First Post",
+    "content": "This is the content of my first post.",
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-15T10:30:00Z",
+    "comments_count": 0
+}
+```
+
+### List Posts with Search
+**Endpoint:** `GET /api/posts/?search=keyword&page=1`
+
+**Response:**
+```json
+{
+    "count": 25,
+    "next": "http://localhost:8000/api/posts/?page=2",
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "author": "testuser",
+            "title": "My First Post",
+            "content": "This is the content of my first post.",
+            "created_at": "2024-01-15T10:30:00Z",
+            "updated_at": "2024-01-15T10:30:00Z",
+            "comments_count": 2
+        }
+    ]
+}
+```
+
+### Create Comment
+**Endpoint:** `POST /api/comments/`
+
+**Headers:**
+```
+Authorization: Token your-auth-token
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+    "post": 1,
+    "content": "Great post! Thanks for sharing."
+}
+```
+
+**Response:**
+```json
+{
+    "id": 1,
+    "post": 1,
+    "author": "testuser",
+    "content": "Great post! Thanks for sharing.",
+    "created_at": "2024-01-15T10:35:00Z",
+    "updated_at": "2024-01-15T10:35:00Z"
+}
+```
+
+## Features
+
+### Posts Features
+- **CRUD Operations**: Create, read, update, and delete posts
+- **Search**: Search posts by title or content using `?search=keyword`
+- **Filtering**: Filter posts by author using `?author=user_id`
+- **Pagination**: Automatic pagination with 10 posts per page
+- **Permissions**: Only authenticated users can create posts, only authors can edit/delete their posts
+
+### Comments Features
+- **CRUD Operations**: Create, read, update, and delete comments
+- **Filtering**: Filter comments by post or author using `?post=post_id&author=user_id`
+- **Permissions**: Only authenticated users can create comments, only authors can edit/delete their comments
+- **Nested Relationships**: Comments are linked to both posts and users
+
+### Advanced Query Parameters
+
+#### Posts Endpoints
+- `GET /api/posts/?search=keyword` - Search in title and content
+- `GET /api/posts/?author=user_id` - Filter by author
+- `GET /api/posts/?page=2` - Pagination
+- `GET /api/posts/?search=keyword&author=user_id&page=1` - Combined filters
+
+#### Comments Endpoints
+- `GET /api/comments/?post=post_id` - Filter by post
+- `GET /api/comments/?author=user_id` - Filter by author
+- `GET /api/comments/?post=post_id&author=user_id` - Combined filters
+
 ## Testing with Postman
 
+### Authentication Flow
 1. **Register a new user** - POST to `/api/accounts/register/`
 2. **Login with credentials** - POST to `/api/accounts/login/`
 3. **Access profile** - GET `/api/accounts/profile/` with token header
 4. **Update profile** - PUT `/api/accounts/profile/` with token header
+
+### Posts and Comments Flow
+5. **Create a post** - POST to `/api/posts/` with token header
+6. **List posts** - GET `/api/posts/` (optional: add search parameters)
+7. **Update your post** - PUT to `/api/posts/{id}/` with token header
+8. **Add a comment** - POST to `/api/comments/` with token header
+9. **List comments for a post** - GET `/api/comments/?post={post_id}`
+10. **Update your comment** - PUT to `/api/comments/{id}/` with token header
+
+## Testing
+
+### Automated Testing
+Run the comprehensive test script:
+```bash
+python test_posts_api.py
+```
+
+### Postman Collection
+Import the `Social_Media_API.postman_collection.json` file into Postman for interactive API testing.
+
+### Manual Testing Steps
+1. Start the development server: `python manage.py runserver`
+2. Register a new user via POST to `/api/accounts/register/`
+3. Use the returned token for authenticated requests
+4. Test all CRUD operations for posts and comments
+5. Verify permissions (users can only edit their own content)
+6. Test search and filtering functionality
 
 ## Project Structure
 
@@ -133,8 +287,39 @@ social_media_api/
 │   ├── views.py          # API views
 │   ├── urls.py           # App URL patterns
 │   └── admin.py          # Admin configuration
+├── posts/
+│   ├── migrations/
+│   ├── models.py          # Post and Comment models
+│   ├── serializers.py     # Post and Comment serializers
+│   ├── views.py          # Post and Comment viewsets
+│   ├── urls.py           # Posts app URL patterns
+│   └── admin.py          # Admin configuration
 ├── social_media_api/
 │   ├── settings.py       # Project settings
 │   └── urls.py          # Main URL configuration
+├── test_posts_api.py     # Comprehensive API test script
+├── Social_Media_API.postman_collection.json  # Postman collection
 └── manage.py
 ```
+
+## Implementation Details
+
+### Models
+- **Post Model**: Contains author (ForeignKey), title, content, timestamps
+- **Comment Model**: Contains post (ForeignKey), author (ForeignKey), content, timestamps
+- Both models include proper ordering and string representations
+
+### Permissions
+- **IsAuthorOrReadOnly**: Custom permission class ensuring only authors can modify their content
+- **IsAuthenticatedOrReadOnly**: Allows read access to all, write access to authenticated users only
+
+### Features Implemented
+- ✅ Complete CRUD operations for posts and comments
+- ✅ Token-based authentication
+- ✅ Search functionality for posts (title and content)
+- ✅ Filtering by author for both posts and comments
+- ✅ Filtering comments by post
+- ✅ Pagination (10 items per page)
+- ✅ Proper permissions and authorization
+- ✅ Admin interface integration
+- ✅ Comprehensive test coverage

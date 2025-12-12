@@ -5,6 +5,6 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    fieldsets = (*BaseUserAdmin.fieldsets, ('Extra', {'fields': ('bio', 'profile_picture', 'followers')}))
+    fieldsets = (*BaseUserAdmin.fieldsets, ('Extra', {'fields': ('bio', 'profile_picture', 'following')}))
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_active')
-    filter_horizontal = ('followers',)
+    filter_horizontal = ('following',)

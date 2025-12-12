@@ -1,6 +1,6 @@
-from rest_framework import status, generics
+from rest_framework import status, generics, permissions
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
@@ -41,7 +41,7 @@ def login(request):
 
 
 @api_view(['GET', 'PUT'])
-@permission_classes([IsAuthenticated])
+@permission_classes([permissions.IsAuthenticated])
 def profile(request):
     if request.method == 'GET':
         serializer = UserProfileSerializer(request.user)
@@ -56,7 +56,7 @@ def profile(request):
 
 
 class FollowUserView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = CustomUser.objects.all()
     
     def post(self, request, user_id):
@@ -72,7 +72,7 @@ class FollowUserView(generics.GenericAPIView):
 
 
 class UnfollowUserView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = CustomUser.objects.all()
     
     def post(self, request, user_id):

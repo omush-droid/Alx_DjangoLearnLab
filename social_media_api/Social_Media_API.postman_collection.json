@@ -419,6 +419,67 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "Follow System",
+			"item": [
+				{
+					"name": "Follow User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/accounts/follow/2/",
+							"host": ["{{base_url}}"],
+							"path": ["accounts", "follow", "2", ""]
+						}
+					}
+				},
+				{
+					"name": "Unfollow User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/accounts/unfollow/2/",
+							"host": ["{{base_url}}"],
+							"path": ["accounts", "unfollow", "2", ""]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Feed",
+			"item": [
+				{
+					"name": "Get Feed",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/feed/",
+							"host": ["{{base_url}}"],
+							"path": ["feed", ""]
+						}
+					}
+				}
+			]
 		}
 	]
 }

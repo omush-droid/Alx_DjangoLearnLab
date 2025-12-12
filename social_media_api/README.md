@@ -55,6 +55,15 @@ A Django REST Framework-based social media API with user authentication and prof
 - **PUT** `/api/comments/{id}/` - Update a comment (author only)
 - **DELETE** `/api/comments/{id}/` - Delete a comment (author only)
 
+### Follow System Endpoints
+
+- **POST** `/api/accounts/follow/{user_id}/` - Follow a user
+- **POST** `/api/accounts/unfollow/{user_id}/` - Unfollow a user
+
+### Feed Endpoints
+
+- **GET** `/api/feed/` - Get personalized feed of posts from followed users
+
 ### User Registration
 **Endpoint:** `POST /api/accounts/register/`
 
@@ -213,6 +222,59 @@ Content-Type: application/json
 }
 ```
 
+### Follow User
+**Endpoint:** `POST /api/accounts/follow/{user_id}/`
+
+**Headers:**
+```
+Authorization: Token your-auth-token
+```
+
+**Response:**
+```json
+{
+    "message": "Now following username"
+}
+```
+
+### Unfollow User
+**Endpoint:** `POST /api/accounts/unfollow/{user_id}/`
+
+**Headers:**
+```
+Authorization: Token your-auth-token
+```
+
+**Response:**
+```json
+{
+    "message": "Unfollowed username"
+}
+```
+
+### Get Feed
+**Endpoint:** `GET /api/feed/`
+
+**Headers:**
+```
+Authorization: Token your-auth-token
+```
+
+**Response:**
+```json
+[
+    {
+        "id": 1,
+        "author": "followed_user",
+        "title": "Post from followed user",
+        "content": "Content from someone you follow",
+        "created_at": "2024-01-15T10:30:00Z",
+        "updated_at": "2024-01-15T10:30:00Z",
+        "comments_count": 2
+    }
+]
+```
+
 ## Features
 
 ### Posts Features
@@ -227,6 +289,16 @@ Content-Type: application/json
 - **Filtering**: Filter comments by post or author using `?post=post_id&author=user_id`
 - **Permissions**: Only authenticated users can create comments, only authors can edit/delete their comments
 - **Nested Relationships**: Comments are linked to both posts and users
+
+### Follow System Features
+- **Follow/Unfollow**: Users can follow and unfollow other users
+- **Self-Follow Prevention**: Users cannot follow themselves
+- **Many-to-Many Relationships**: Efficient handling of follower/following relationships
+
+### Feed Features
+- **Personalized Feed**: Shows posts only from users you follow
+- **Chronological Order**: Posts ordered by creation date (newest first)
+- **Authentication Required**: Only authenticated users can access their feed
 
 ### Advanced Query Parameters
 
@@ -257,12 +329,21 @@ Content-Type: application/json
 9. **List comments for a post** - GET `/api/comments/?post={post_id}`
 10. **Update your comment** - PUT to `/api/comments/{id}/` with token header
 
+### Follow System and Feed Flow
+11. **Follow a user** - POST to `/api/accounts/follow/{user_id}/` with token header
+12. **View your feed** - GET `/api/feed/` with token header
+13. **Unfollow a user** - POST to `/api/accounts/unfollow/{user_id}/` with token header
+
 ## Testing
 
 ### Automated Testing
-Run the comprehensive test script:
+Run the comprehensive test scripts:
 ```bash
+# Test posts and comments functionality
 python test_posts_api.py
+
+# Test follow system and feed functionality
+python test_follow_feed.py
 ```
 
 ### Postman Collection
@@ -298,6 +379,7 @@ social_media_api/
 │   ├── settings.py       # Project settings
 │   └── urls.py          # Main URL configuration
 ├── test_posts_api.py     # Comprehensive API test script
+├── test_follow_feed.py   # Follow and feed test script
 ├── Social_Media_API.postman_collection.json  # Postman collection
 └── manage.py
 ```
@@ -321,5 +403,7 @@ social_media_api/
 - ✅ Filtering comments by post
 - ✅ Pagination (10 items per page)
 - ✅ Proper permissions and authorization
+- ✅ Follow/unfollow system
+- ✅ Personalized feed functionality
 - ✅ Admin interface integration
 - ✅ Comprehensive test coverage

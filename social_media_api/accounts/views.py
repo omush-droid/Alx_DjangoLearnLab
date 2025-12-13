@@ -4,8 +4,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
 from .models import User as CustomUser
 from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer
+from notifications.models import Notification
 
 User = get_user_model()
 
@@ -66,6 +68,16 @@ class FollowUserView(generics.GenericAPIView):
                 return Response({'error': 'Cannot follow yourself'}, status=status.HTTP_400_BAD_REQUEST)
             
             request.user.following.add(user_to_follow)
+            
+            # Create notification for followed user
+            Notification.objects.create(
+                recipient=user_to_follow,
+                actor=request.user,
+                verb='started following you',
+                target_content_type=ContentType.objects.get_for_model(user_to_follow),
+                target_object_id=user_to_follow.id
+            )
+            
             return Response({'message': f'Now following {user_to_follow.username}'}, status=status.HTTP_200_OK)
         except CustomUser.DoesNotExist:
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)

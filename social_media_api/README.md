@@ -64,6 +64,16 @@ A Django REST Framework-based social media API with user authentication and prof
 
 - **GET** `/api/feed/` - Get personalized feed of posts from followed users
 
+### Likes Endpoints
+
+- **POST** `/api/posts/{id}/like/` - Like a post
+- **POST** `/api/posts/{id}/unlike/` - Unlike a post
+
+### Notifications Endpoints
+
+- **GET** `/api/notifications/` - Get user's notifications
+- **POST** `/api/notifications/{id}/read/` - Mark notification as read
+
 ### User Registration
 **Endpoint:** `POST /api/accounts/register/`
 
@@ -270,9 +280,86 @@ Authorization: Token your-auth-token
         "content": "Content from someone you follow",
         "created_at": "2024-01-15T10:30:00Z",
         "updated_at": "2024-01-15T10:30:00Z",
-        "comments_count": 2
+        "comments_count": 2,
+        "likes_count": 5,
+        "is_liked": false
     }
 ]
+```
+
+### Like Post
+**Endpoint:** `POST /api/posts/{id}/like/`
+
+**Headers:**
+```
+Authorization: Token your-auth-token
+```
+
+**Response:**
+```json
+{
+    "message": "Post liked"
+}
+```
+
+### Unlike Post
+**Endpoint:** `POST /api/posts/{id}/unlike/`
+
+**Headers:**
+```
+Authorization: Token your-auth-token
+```
+
+**Response:**
+```json
+{
+    "message": "Post unliked"
+}
+```
+
+### Get Notifications
+**Endpoint:** `GET /api/notifications/`
+
+**Headers:**
+```
+Authorization: Token your-auth-token
+```
+
+**Response:**
+```json
+[
+    {
+        "id": 1,
+        "actor": "username",
+        "verb": "liked your post",
+        "target_type": "post",
+        "timestamp": "2024-01-15T10:35:00Z",
+        "read": false
+    },
+    {
+        "id": 2,
+        "actor": "username2",
+        "verb": "started following you",
+        "target_type": "user",
+        "timestamp": "2024-01-15T10:30:00Z",
+        "read": true
+    }
+]
+```
+
+### Mark Notification as Read
+**Endpoint:** `POST /api/notifications/{id}/read/`
+
+**Headers:**
+```
+Authorization: Token your-auth-token
+```
+
+**Response:**
+```json
+{
+    "message": "Notification marked as read"
+}
 ```
 
 ## Features
@@ -299,6 +386,20 @@ Authorization: Token your-auth-token
 - **Personalized Feed**: Shows posts only from users you follow
 - **Chronological Order**: Posts ordered by creation date (newest first)
 - **Authentication Required**: Only authenticated users can access their feed
+
+### Likes Features
+- **Like/Unlike Posts**: Users can like and unlike posts
+- **Duplicate Prevention**: Users cannot like the same post multiple times
+- **Like Count**: Posts display total number of likes
+- **Like Status**: Posts show if current user has liked them
+- **Notifications**: Post authors receive notifications when their posts are liked
+
+### Notifications Features
+- **Real-time Notifications**: Users receive notifications for interactions
+- **Multiple Notification Types**: Likes, comments, and follows generate notifications
+- **Read Status**: Notifications can be marked as read/unread
+- **Chronological Order**: Notifications ordered by timestamp (newest first)
+- **User-specific**: Users only see their own notifications
 
 ### Advanced Query Parameters
 
@@ -334,6 +435,12 @@ Authorization: Token your-auth-token
 12. **View your feed** - GET `/api/feed/` with token header
 13. **Unfollow a user** - POST to `/api/accounts/unfollow/{user_id}/` with token header
 
+### Likes and Notifications Flow
+14. **Like a post** - POST to `/api/posts/{post_id}/like/` with token header
+15. **View notifications** - GET `/api/notifications/` with token header
+16. **Unlike a post** - POST to `/api/posts/{post_id}/unlike/` with token header
+17. **Mark notification as read** - POST to `/api/notifications/{notification_id}/read/` with token header
+
 ## Testing
 
 ### Automated Testing
@@ -344,6 +451,9 @@ python test_posts_api.py
 
 # Test follow system and feed functionality
 python test_follow_feed.py
+
+# Test likes and notifications functionality
+python test_likes_notifications.py
 ```
 
 ### Postman Collection
@@ -370,16 +480,24 @@ social_media_api/
 │   └── admin.py          # Admin configuration
 ├── posts/
 │   ├── migrations/
-│   ├── models.py          # Post and Comment models
-│   ├── serializers.py     # Post and Comment serializers
-│   ├── views.py          # Post and Comment viewsets
+│   ├── models.py          # Post, Comment, and Like models
+│   ├── serializers.py     # Post, Comment, and Like serializers
+│   ├── views.py          # Post and Comment viewsets with like functionality
 │   ├── urls.py           # Posts app URL patterns
+│   └── admin.py          # Admin configuration
+├── notifications/
+│   ├── migrations/
+│   ├── models.py          # Notification model
+│   ├── serializers.py     # Notification serializers
+│   ├── views.py          # Notification views
+│   ├── urls.py           # Notifications URL patterns
 │   └── admin.py          # Admin configuration
 ├── social_media_api/
 │   ├── settings.py       # Project settings
 │   └── urls.py          # Main URL configuration
 ├── test_posts_api.py     # Comprehensive API test script
 ├── test_follow_feed.py   # Follow and feed test script
+├── test_likes_notifications.py  # Likes and notifications test script
 ├── Social_Media_API.postman_collection.json  # Postman collection
 └── manage.py
 ```
@@ -389,7 +507,9 @@ social_media_api/
 ### Models
 - **Post Model**: Contains author (ForeignKey), title, content, timestamps
 - **Comment Model**: Contains post (ForeignKey), author (ForeignKey), content, timestamps
-- Both models include proper ordering and string representations
+- **Like Model**: Contains user (ForeignKey), post (ForeignKey), timestamps with unique constraint
+- **Notification Model**: Contains recipient, actor, verb, target (GenericForeignKey), timestamp, read status
+- All models include proper ordering and string representations
 
 ### Permissions
 - **IsAuthorOrReadOnly**: Custom permission class ensuring only authors can modify their content
@@ -405,5 +525,9 @@ social_media_api/
 - ✅ Proper permissions and authorization
 - ✅ Follow/unfollow system
 - ✅ Personalized feed functionality
+- ✅ Like/unlike posts functionality
+- ✅ Comprehensive notification system
+- ✅ Real-time notifications for likes, comments, and follows
+- ✅ Notification read/unread status
 - ✅ Admin interface integration
 - ✅ Comprehensive test coverage

@@ -362,6 +362,49 @@ Authorization: Token your-auth-token
 }
 ```
 
+## 🚀 Production Deployment
+
+The Social Media API is production-ready and can be deployed to various platforms:
+
+### Quick Deployment Options
+
+#### Heroku (Recommended for beginners)
+```bash
+# Run the automated deployment script
+chmod +x deploy_heroku.sh
+./deploy_heroku.sh
+```
+
+#### Docker
+```bash
+# Build and run with Docker Compose
+docker-compose up -d
+docker-compose exec web python manage.py migrate
+```
+
+#### DigitalOcean
+```bash
+# Run the DigitalOcean setup script
+chmod +x deploy_digitalocean.sh
+./deploy_digitalocean.sh
+```
+
+### Production Testing
+```bash
+# Test your deployed API
+python test_production_api.py https://your-app-url.com
+
+# Monitor deployment status
+python deployment_status.py https://your-app-url.com
+```
+
+### Live Demo
+- **API URL**: `https://your-deployed-app.herokuapp.com`
+- **Admin Panel**: `https://your-deployed-app.herokuapp.com/admin/`
+- **API Documentation**: `https://your-deployed-app.herokuapp.com/`
+
+For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)
+
 ## Features
 
 ### Posts Features
